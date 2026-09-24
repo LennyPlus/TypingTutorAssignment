@@ -1,6 +1,7 @@
 package com.mycompany.typingtutor;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -22,7 +23,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
         
@@ -32,10 +32,13 @@ public class App extends Application {
         int col = 0;
         int row = 0;
         
+        int btnSizeX = 50;
+        int btnSizeY = 50;
+        
         // Add all the letters of the alphabet
         for (int i = 0; i < 26; i++) {
             Button button = new Button("" + (char) (i + 97));
-            button.setMinSize(40, 40);
+            button.setMinSize(btnSizeX, btnSizeY);
             
             gridPane.add(button, row, col);
             
@@ -51,7 +54,7 @@ public class App extends Application {
         // Add additional keys
         // TODO: add it in the for loop above
         Button button = new Button("Shift");
-        button.setMinSize(40, 40);
+        button.setMinSize(btnSizeX, btnSizeY);
 
         gridPane.add(button, 4, 2);
         
@@ -59,9 +62,19 @@ public class App extends Application {
         TextField displayTextField = new TextField("Text you should type");
         TextField typedTextField = new TextField("Type text here!");
         
-//        typedTextField.setMinHeight(100);
         VBox fields = new VBox();
         fields.getChildren().addAll(displayTextField, typedTextField);
+        
+        // Apply the same settings for both fields
+        for (Node node: fields.getChildren()) {
+            if (node instanceof TextField) {
+                TextField field = (TextField) node;
+                field.setMinHeight(100);
+
+                VBox.setMargin(field, new Insets(5, 10, 10, 10));
+
+            }
+        }
         
         
         // Vbox to store everything
