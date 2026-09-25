@@ -8,10 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -96,10 +93,17 @@ public class App extends Application {
             node.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000");
         }
         
+        // Label to show what the user pressed
+        Label displayLabel = new Label("Nothing has been pressed yet");
+        displayLabel.setMinSize(100, 40);
+        displayLabel.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000; -fx-font-size: 12px");
+        displayLabel.setPadding(new Insets(0, 0, 0, 5));
+        VBox.setMargin(displayLabel, new Insets(10, 10, 10, 10));
+        
         // Vbox to store everything
         VBox app = new VBox();
         
-        app.getChildren().addAll(fields, gridPane);
+        app.getChildren().addAll(fields, gridPane, displayLabel);
         
         var scene = new Scene(new StackPane(app), 640, 480);
         
@@ -112,6 +116,9 @@ public class App extends Application {
             String character = event.getText();
             // Add key to the textField
             typedTextField.setText(typedTextField.getText() + character);
+            
+            // Update the display label
+            displayLabel.setText("Pressed key: " + character);
             
             // Change appearamce of correponding virtual key
             for (Node node : gridPane.getChildren()) {
