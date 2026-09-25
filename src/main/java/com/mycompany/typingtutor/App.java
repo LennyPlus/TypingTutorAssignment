@@ -1,5 +1,9 @@
 package com.mycompany.typingtutor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -18,7 +23,37 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
-
+    List<KeyCode> supportedKeys = new ArrayList<>(Arrays.asList(
+            KeyCode.A,
+            KeyCode.B,
+            KeyCode.C,
+            KeyCode.D,
+            KeyCode.E,
+            KeyCode.F,
+            KeyCode.G,
+            KeyCode.H,
+            KeyCode.I,
+            KeyCode.J,
+            KeyCode.K,
+            KeyCode.L,
+            KeyCode.M,
+            KeyCode.N,
+            KeyCode.O,
+            KeyCode.P,
+            KeyCode.Q,
+            KeyCode.R,
+            KeyCode.S,
+            KeyCode.T,
+            KeyCode.U,
+            KeyCode.V,
+            KeyCode.W,
+            KeyCode.X,
+            KeyCode.Y,
+            KeyCode.Z,
+            KeyCode.SHIFT,
+            KeyCode.SPACE
+            ));
+    
     @Override
     public void start(Stage stage) {
         GridPane gridPane = new GridPane();
