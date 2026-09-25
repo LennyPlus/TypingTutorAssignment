@@ -38,6 +38,7 @@ public class App extends Application {
         // Add all the letters of the alphabet
         for (int i = 0; i < 26; i++) {
             Button button = new Button("" + (char) (i + 97));
+            button.setUserData("" + (char) (i + 97));
             button.setMinSize(btnSizeX, btnSizeY);
             
             gridPane.add(button, row, col);
@@ -48,22 +49,38 @@ public class App extends Application {
                 row = 0;
                 col++;
             }
-            
         }
         
         // Add additional keys
         // TODO: add it in the for loop above
         Button button = new Button("Shift");
         button.setMinSize(btnSizeX, btnSizeY);
-
+        button.setUserData("*to be implemented*");
         gridPane.add(button, 4, 2);
+        
+        Button shiftButton = new Button("Space");
+        shiftButton.setMinSize(btnSizeX, btnSizeY);
+        shiftButton.setUserData(" ");
+        gridPane.add(shiftButton, 5, 2);
         
         // TextFields
         TextField displayTextField = new TextField("Text you should type");
-        TextField typedTextField = new TextField("Type text here!");
-        
+        TextField typedTextField = new TextField();
+        typedTextField.setPromptText("Type text here!");
+
         VBox fields = new VBox();
         fields.getChildren().addAll(displayTextField, typedTextField);
+        
+        
+        // Add logic for buttons
+        for (Node node: gridPane.getChildren()) {
+            if (node instanceof Button) {
+                ((Button) node).setOnAction(btn -> {
+                    Button source = (Button) btn.getSource();
+                    typedTextField.setText(typedTextField.getText() + source.getUserData());
+                });
+            }
+        }
         
         // Apply the same settings for both fields
         for (Node node: fields.getChildren()) {
@@ -72,10 +89,8 @@ public class App extends Application {
                 field.setMinHeight(100);
 
                 VBox.setMargin(field, new Insets(5, 10, 10, 10));
-
             }
         }
-        
         
         // Vbox to store everything
         VBox app = new VBox();
