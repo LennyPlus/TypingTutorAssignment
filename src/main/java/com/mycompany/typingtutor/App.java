@@ -138,8 +138,6 @@ public class App extends Application {
         
         Label textCounterLabel = new Label("1 of 6");
         
-        HBox nextBtnHbox = new HBox(nextBtn, textCounterLabel);
-        
         nextBtn.setOnAction(event -> {
             if (++sampleTextIdx < 6) {
                 displayTextField.setText(sampleTexts.get(sampleTextIdx));
@@ -148,10 +146,25 @@ public class App extends Application {
             } 
         });
         
+        Button resetBtn = new Button("Reset");
+        VBox.setMargin(resetBtn, new Insets(0, 0, 0, 10));
+        
+        resetBtn.setOnAction(event -> {
+            sampleTextIdx = 0;
+            displayTextField.setText(sampleTexts.get(sampleTextIdx));
+            textCounterLabel.setText("" + (sampleTextIdx + 1) + " of " + sampleTexts.size());
+            typedTextField.clear();
+        });
+        
+        HBox nextBtnHbox = new HBox(nextBtn, textCounterLabel);
+        VBox buttonVbox = new VBox(nextBtnHbox, resetBtn);
+        HBox infoHbox = new HBox(displayLabel, buttonVbox);
+        infoHbox.setPadding(new Insets(10,10,10,10));
+        
         // Vbox to store everything
         VBox app = new VBox();
         
-        app.getChildren().addAll(fields, gridPane, displayLabel, nextBtnHbox);
+        app.getChildren().addAll(fields, gridPane, infoHbox);
         
         var scene = new Scene(new StackPane(app), 640, 480);
         
