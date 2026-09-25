@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -71,8 +72,19 @@ public class App extends Application {
         VBox fields = new VBox();
         fields.getChildren().addAll(displayTextField, typedTextField);
         
+        // Apply the same settings for both fields
+        for (Node node: fields.getChildren()) {
+            if (node instanceof TextField) {
+                TextField field = (TextField) node;
+                field.setEditable(false);
+                field.setMinHeight(100);
+
+                VBox.setMargin(field, new Insets(5, 10, 10, 10));
+            }
+        }
         
-        // Add logic for buttons
+        
+        // Add logic for buttons and change style
         for (Node node: gridPane.getChildren()) {
             if (node instanceof Button) {
                 ((Button) node).setOnAction(btn -> {
@@ -80,16 +92,8 @@ public class App extends Application {
                     typedTextField.setText(typedTextField.getText() + source.getUserData());
                 });
             }
-        }
-        
-        // Apply the same settings for both fields
-        for (Node node: fields.getChildren()) {
-            if (node instanceof TextField) {
-                TextField field = (TextField) node;
-                field.setMinHeight(100);
-
-                VBox.setMargin(field, new Insets(5, 10, 10, 10));
-            }
+            
+            node.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000");
         }
         
         // Vbox to store everything
@@ -98,6 +102,25 @@ public class App extends Application {
         app.getChildren().addAll(fields, gridPane);
         
         var scene = new Scene(new StackPane(app), 640, 480);
+        
+        // Physical keyboard logic
+        // Changes button style when clicked
+        // TODO: make the button also change style when theyre clicked manually
+        scene.setOnKeyPressed(event -> {
+            gridPane.getChildren().stream().forEach(action -> action.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000"));
+            
+            String character = event.getText();
+            // Add key to the textField
+            typedTextField.setText(typedTextField.getText() + character);
+            
+            // Change appearamce of correponding virtual key
+            for (Node node : gridPane.getChildren()) {
+                if (node.getUserData().equals(character)) {
+                    node.setStyle("-fx-background-color:#bcbcbc; -fx-border-color:#000000");
+                }
+            }
+        });
+        
         stage.setScene(scene);
         stage.show();
     }
