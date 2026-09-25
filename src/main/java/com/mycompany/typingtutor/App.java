@@ -149,11 +149,20 @@ public class App extends Application {
             gridPane.getChildren().stream().forEach(action -> action.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000"));
             
             String character = event.getText();
+            KeyCode keyCode = event.getCode();
+            
             // Add key to the textField
             typedTextField.setText(typedTextField.getText() + character);
             
             // Update the display label
-            displayLabel.setText("Pressed key: " + character);
+            if (!supportedKeys.contains(keyCode)) {
+                displayLabel.setText("Not handled: " + keyCode.toString());
+                displayLabel.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000; -fx-font-size: 12px; -fx-text-fill: #ff2020");
+            } else {
+                displayLabel.setText("Pressed key: " + character);
+                displayLabel.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000; -fx-font-size: 12px; -fx-text-fill: #000000");
+            }
+                 
             
             // Change appearamce of correponding virtual key
             for (Node node : gridPane.getChildren()) {
