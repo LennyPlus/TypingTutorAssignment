@@ -158,6 +158,10 @@ public class App extends Application {
         Button resetBtn = new Button("Reset");
         resetBtn.setStyle("fx-background-color:#ececec; -fx-border-color:#000000; -fx-font-size: 12px");
         
+        // Alors the user to keep typing without triggering the buttons after pressing them
+        nextBtn.setFocusTraversable(false);
+        resetBtn.setFocusTraversable(false);
+        
         resetBtn.setOnAction(event -> {
             sampleTextIdx = 0;
             
@@ -260,7 +264,7 @@ public class App extends Application {
                 }
             }
             
-            // Change appearamce of correponding virtual key
+            // Change appearance of correponding virtual key
             for (Node node : gridPane.getChildren()) {
                 if (node.getUserData() != null && node.getUserData().equals(keyCode)) {
                     node.setStyle("-fx-background-color:#bcbcbc; -fx-border-color:#000000");
@@ -286,6 +290,7 @@ public class App extends Application {
         stage.setTitle("Typing Tutor");
         stage.show();
         
+        // Space button won't work without this
         app.requestFocus();
     }
 
