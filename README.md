@@ -1,5 +1,6 @@
 # TypingTutor
 A JavaFx application that helps users learn how to “touch type” for the Program Development in a Graphical Environment course at Vanier
+
 By Anas issa
 
 ## Usage
