@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -32,8 +33,8 @@ public class App extends Application {
             KeyCode.Z,
             KeyCode.SHIFT,
             KeyCode.SPACE,
-            KeyCode.BACK_SPACE,
-            KeyCode.PERIOD
+            KeyCode.PERIOD,
+            KeyCode.BACK_SPACE
             ));
     
     List<String> sampleTexts = new ArrayList<>(Arrays.asList(
@@ -45,7 +46,6 @@ public class App extends Application {
             "A large fawn jumped quickly over white zinc boxes."));
     
     int sampleTextIdx = 0;
-    
     int correctStrokes = 0;
     int incorrectStrokes = 0;
     boolean isShiftPressed = false;
@@ -65,11 +65,28 @@ public class App extends Application {
         int btnSizeY = 50;
         
         // Add all the letters of the alphabet
-        for (int i = 0; i < 26; i++) {
-            Button button = new Button("" + (char) (i + 97));
-            button.setUserData("" + (char) (i + 97));
-            button.setMinSize(btnSizeX, btnSizeY);
+        for (int i = 0; i < supportedKeys.size(); i++) {
+            KeyCode keyCode = supportedKeys.get(i);
+            Button button = new Button();
             
+            button.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000");
+            
+            if (keyCode.isLetterKey()) {
+                String letter = keyCode.getChar();
+
+                button.setText(letter);
+            } else if (keyCode == KeyCode.SHIFT) {
+                button.setText("Shift");
+            } else if (keyCode == KeyCode.SPACE) {
+                button.setText("Space");
+            } else if (keyCode == KeyCode.PERIOD) {
+                button.setText(".");
+            } else if (keyCode == KeyCode.BACK_SPACE) {
+                button.setText("<-");
+            }
+            
+            button.setUserData(keyCode);
+            button.setMinSize(btnSizeX, btnSizeY);
             gridPane.add(button, row, col);
             
             row++;
@@ -79,27 +96,6 @@ public class App extends Application {
                 col++;
             }
         }
-        
-        // Add additional keys
-        // TODO: add it in the for loop above
-        Button button = new Button("Shift");
-        button.setMinSize(btnSizeX, btnSizeY);
-        button.setUserData("*to be implemented*");
-        gridPane.add(button, 4, 2);
-        
-        Button shiftButton = new Button("Space");
-        shiftButton.setMinSize(btnSizeX, btnSizeY);
-        shiftButton.setUserData(" ");
-        gridPane.add(shiftButton, 5, 2);
-        
-        Button periodButton = new Button(".");
-        periodButton.setMinSize(btnSizeX, btnSizeY);
-        periodButton.setUserData(".");
-        gridPane.add(periodButton, 6, 2);
-        
-        
-        // Apply style to all buttons
-        gridPane.getChildren().stream().forEach(action -> action.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000"));
         
         // TextFields
         TextField typedTextField = new TextField();
@@ -138,6 +134,7 @@ public class App extends Application {
         
         Label textCounterLabel = new Label("1 of 6");
         
+        // Label that shows correct/incorrect stroke count
         Label statsLabel = new Label("Correct: 0 | Incorrect: 0");
         
         nextBtn.setOnAction(event -> {
@@ -145,6 +142,11 @@ public class App extends Application {
                 displayTextField.setText(sampleTexts.get(sampleTextIdx));
                 textCounterLabel.setText("" + (sampleTextIdx + 1) + " of " + sampleTexts.size());
                 typedTextField.clear();
+                
+                // Update statsLabel
+                correctStrokes = 0;
+                incorrectStrokes = 0;
+                statsLabel.setText("Correct: " + correctStrokes + " | Incorrect: " + incorrectStrokes);
             } 
         });
         
@@ -153,9 +155,16 @@ public class App extends Application {
         
         resetBtn.setOnAction(event -> {
             sampleTextIdx = 0;
+            
             displayTextField.setText(sampleTexts.get(sampleTextIdx));
             textCounterLabel.setText("" + (sampleTextIdx + 1) + " of " + sampleTexts.size());
             typedTextField.clear();
+            
+            // Update statsLabel
+            correctStrokes = 0;
+            incorrectStrokes = 0;
+            statsLabel.setText("Correct: " + correctStrokes + " | Incorrect: " + incorrectStrokes);
+            
         });
         
         
@@ -173,7 +182,6 @@ public class App extends Application {
         
         // Physical keyboard logic
         // Changes button style when clicked
-        // TODO: make the button also change style when theyre clicked manually
         scene.setOnKeyPressed(event -> {
             KeyCode keyCode = event.getCode();
             String character = isShiftPressed ? keyCode.getChar().toUpperCase() : keyCode.getChar().toLowerCase();
@@ -220,7 +228,9 @@ public class App extends Application {
 
                         statsLabel.setText("Correct: " + correctStrokes + " | Incorrect: " + incorrectStrokes);
                     }
-                } 
+                } else if (keyCode == KeyCode.SPACE) {
+                    typedTextField.setText(typedText + " ");
+                }
                 
                 // Updates counter labels
                 if (!typedText.isEmpty() && keyCode != KeyCode.BACK_SPACE && keyCode != KeyCode.SHIFT) {
@@ -242,7 +252,7 @@ public class App extends Application {
             
             // Change appearamce of correponding virtual key
             for (Node node : gridPane.getChildren()) {
-                if (node.getUserData().equals(character)) {
+                if (node.getUserData() != null && node.getUserData().equals(keyCode)) {
                     node.setStyle("-fx-background-color:#bcbcbc; -fx-border-color:#000000");
                 }
             }
@@ -255,9 +265,8 @@ public class App extends Application {
             }
 
             // Reset virtual key style on release
-            String character = keyCode.getChar().toLowerCase();
             for (Node node : gridPane.getChildren()) {
-                if (node.getUserData() != null && node.getUserData().toString().equalsIgnoreCase(character)) {
+                if (node.getUserData() != null && node.getUserData().equals(keyCode)) {
                     node.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000");
                 }
             }
@@ -273,5 +282,4 @@ public class App extends Application {
     public static void main(String[] args) {
         launch();
     }
-
 }
