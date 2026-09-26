@@ -73,7 +73,6 @@ public class App extends Application {
             
             if (keyCode.isLetterKey()) {
                 String letter = keyCode.getChar();
-
                 button.setText(letter);
             } else if (keyCode == KeyCode.SHIFT) {
                 button.setText("Shift");
@@ -100,12 +99,15 @@ public class App extends Application {
         // TextFields
         TextField typedTextField = new TextField();
         TextField displayTextField = new TextField();
-        typedTextField.setPromptText("Type text here!");
+        
+        typedTextField.setPromptText("Press any button your keybaord for it to appear here!");
         displayTextField.setPromptText(sampleTexts.get(sampleTextIdx));
+        
         typedTextField.setDisable(true);
         displayTextField.setDisable(true);
-        typedTextField.setStyle("-fx-font-size: 12px; -fx-prompt-text-fill: #000000");
-        displayTextField.setStyle("-fx-font-size: 12px; -fx-prompt-text-fill: #000000");
+        
+        typedTextField.setStyle("-fx-font-size: 12px; -fx-prompt-text-fill: #000000; -fx-opacity: 1.0");
+        displayTextField.setStyle("-fx-font-size: 12px; -fx-prompt-text-fill: #000000; -fx-opacity: 1.0");
 
         VBox fields = new VBox();
         fields.getChildren().addAll(displayTextField, typedTextField);
@@ -122,20 +124,22 @@ public class App extends Application {
         }
         
         // Label to show what the user pressed
-        Label displayLabel = new Label("Nothing has been pressed yet");
+        Label displayLabel = new Label("Pressed: Nothing");
         displayLabel.setMinSize(100, 40);
         displayLabel.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000; -fx-font-size: 12px");
-        displayLabel.setPadding(new Insets(0, 0, 0, 5));
-        VBox.setMargin(displayLabel, new Insets(10, 10, 10, 10));
-        
-        // Button to let the user move to the next input
-        Button nextBtn = new Button("Next");
-        HBox.setMargin(nextBtn, new Insets(0, 0, 0, 10));
+        displayLabel.setPadding(new Insets(0, 5, 0, 5));
         
         Label textCounterLabel = new Label("1 of 6");
         
         // Label that shows correct/incorrect stroke count
         Label statsLabel = new Label("Correct: 0 | Incorrect: 0");
+        statsLabel.setMinSize(100, 40);
+        statsLabel.setPadding(new Insets(0, 5, 0, 5));
+        statsLabel.setStyle("-fx-background-color:#ececec; -fx-border-color:#000000; -fx-font-size: 12px");
+        
+        // Button to let the user move to the next input
+        Button nextBtn = new Button("Next");
+        nextBtn.setStyle("fx-background-color:#ececec; -fx-border-color:#000000; -fx-font-size: 12px");
         
         nextBtn.setOnAction(event -> {
             if (++sampleTextIdx < 6) {
@@ -151,7 +155,7 @@ public class App extends Application {
         });
         
         Button resetBtn = new Button("Reset");
-        VBox.setMargin(resetBtn, new Insets(0, 0, 0, 10));
+        resetBtn.setStyle("fx-background-color:#ececec; -fx-border-color:#000000; -fx-font-size: 12px");
         
         resetBtn.setOnAction(event -> {
             sampleTextIdx = 0;
@@ -167,18 +171,21 @@ public class App extends Application {
             
         });
         
+        HBox actionButtonsBox = new HBox(10, nextBtn, resetBtn, textCounterLabel);
+        actionButtonsBox.setAlignment(Pos.CENTER);
+
+        HBox statusBox = new HBox(15, displayLabel, statsLabel);
+        statusBox.setAlignment(Pos.CENTER);
+
+        VBox bottomPanel = new VBox(10, statusBox, actionButtonsBox);
+        bottomPanel.setPadding(new Insets(10, 10, 10, 10));
+        bottomPanel.setAlignment(Pos.CENTER);
         
-        HBox nextBtnHbox = new HBox(nextBtn, textCounterLabel);
-        VBox buttonVbox = new VBox(nextBtnHbox, resetBtn);
-        HBox infoHbox = new HBox(displayLabel, buttonVbox);
-        infoHbox.setPadding(new Insets(10,10,10,10));
+        VBox app = new VBox(10);
+        app.setPadding(new Insets(10));
+        app.getChildren().addAll(fields, gridPane, bottomPanel);
         
-        // Vbox to store everything
-        VBox app = new VBox();
-        
-        app.getChildren().addAll(fields, gridPane, infoHbox, statsLabel);
-        
-        var scene = new Scene(new StackPane(app), 640, 480);
+        var scene = new Scene(new StackPane(app), 640, 580);
         
         // Physical keyboard logic
         // Changes button style when clicked
@@ -202,7 +209,11 @@ public class App extends Application {
                 
                 // Add key to the textField
                 if (supportedKeys.contains(keyCode) && keyCode != KeyCode.SHIFT && keyCode != KeyCode.BACK_SPACE) {
-                    typedTextField.setText(typedText + character);
+                    if (keyCode == KeyCode.SPACE) {
+                        typedTextField.setText(typedText + " ");
+                    } else {
+                        typedTextField.setText(typedText + character);
+                    }
                     
                     // Update typedText variable
                     typedText = typedTextField.getText();
@@ -228,9 +239,7 @@ public class App extends Application {
 
                         statsLabel.setText("Correct: " + correctStrokes + " | Incorrect: " + incorrectStrokes);
                     }
-                } else if (keyCode == KeyCode.SPACE) {
-                    typedTextField.setText(typedText + " ");
-                }
+                } 
                 
                 // Updates counter labels
                 if (!typedText.isEmpty() && keyCode != KeyCode.BACK_SPACE && keyCode != KeyCode.SHIFT) {
@@ -273,9 +282,9 @@ public class App extends Application {
         });
         
         stage.setScene(scene);
+        stage.setTitle("Typing Tutor");
         stage.show();
         
-        app.setFocusTraversable(true);
         app.requestFocus();
     }
 
