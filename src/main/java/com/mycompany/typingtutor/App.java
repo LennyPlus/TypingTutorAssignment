@@ -14,13 +14,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 
 /**
+ * @author Anas Issa
+ * GitHub link: https://github.com/LennyPlus/TypingTutorAssignment
  * JavaFX App
  */
 public class App extends Application {
